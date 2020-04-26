@@ -28,3 +28,10 @@
 .Card:hover {
   border: 10px solid #FDD994;
 }
+
+.Button {
+  background-color: #B590CA;
+  border: none;
+  height: 50px;
+  width: 100px;
+}
