@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import {generateCards, shuffleCards, drawNCardsFromDeck} from './GameUtils.js';
+import {generateCards, shuffleCards, drawNCardsFromDeck, checkIsSet} from './GameUtils.js';
 
 class Card extends React.Component {
   render() {
@@ -54,12 +54,17 @@ class App extends React.Component {
     for (let i = 0; i < this.state.selected.length; i++) {
       if (this.state.selected[i]) selectedIndexes.push(i);
     }
-    console.log(selectedIndexes);
-    const [drawnCards, newDeck] = drawNCardsFromDeck(selectedIndexes.length, this.state.deck);
-    for (let j = 0; j < selectedIndexes.length; j++) {
-      newCards[selectedIndexes[j]] = drawnCards[j];
+    if (selectedIndexes.length !== 3) return;
+
+    const isSet = checkIsSet([newCards[selectedIndexes[0]], newCards[selectedIndexes[1]], newCards[selectedIndexes[2]]]);
+    if (isSet) {
+      const [drawnCards, newDeck] = drawNCardsFromDeck(selectedIndexes.length, this.state.deck);
+      for (let j = 0; j < selectedIndexes.length; j++) {
+        newCards[selectedIndexes[j]] = drawnCards[j];
+      }
+      this.setState({cards: newCards, selected: Array(12).fill(false), deck: newDeck});
     }
-    this.setState({cards: newCards, selected: Array(12).fill(false), deck: newDeck});
+
   }
 
   render() {
