@@ -1,11 +1,10 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import {generateCards, shuffleCards, drawNCardsFromDeck} from './GameUtils.js';
 
 class Card extends React.Component {
   render() {
     const classes = "Card" + (this.props.isSelected ? " Selected" : "");
-    console.log(classes);
     return (
       <div className={classes} onClick={this.props.clickHandler}>
         <h1>{this.props.value}</h1>
@@ -17,9 +16,11 @@ class Card extends React.Component {
 class App extends React.Component {
   constructor(props) {
     super(props);
+    const [initialCards, deck] = drawNCardsFromDeck(12, shuffleCards(generateCards()));
     this.state = {
-      cards: Array(12).fill(0),
+      cards: initialCards,
       selected: Array(12).fill(false),
+      deck: deck,
     };
   }
 
@@ -46,10 +47,11 @@ class App extends React.Component {
   }
 
   render() {
+    const board = this.renderBoard();
     return (
       <div className="App">
         <div className="Board">
-          {this.renderBoard()}
+          {board}
         </div>
       </div>
     );
