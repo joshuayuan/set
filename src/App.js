@@ -7,13 +7,15 @@ import {
   checkIsSet,
   findSetsInCards
 } from './GameUtils.js';
+import SVGs from './SVGs.js';
 
 class Card extends React.Component {
   render() {
     const classes = "Card" + (this.props.isSelected ? " Selected" : "");
     return (
       <div className={classes} onClick={this.props.clickHandler}>
-        <h1>{this.props.value}</h1>
+        <SVGs value={this.props.value}/>
+        <p>{this.props.value}</p>
       </div>
     );
   }
