@@ -40,7 +40,7 @@ export function drawNCardsFromDeck(n, deck)  {
   return [drawnCards, newDeck];
 }
 
-// Only 3 cards should be passed in
+// Only 3 cards should be passed in, as a list.
 // Returns true if the 3 cards make a set.
 export function checkIsSet(potentialSet) {
   const cards = potentialSet.slice();
@@ -53,9 +53,25 @@ export function checkIsSet(potentialSet) {
   const feature2 = allDifferent(first[1], second[1], third[1]) || allSame(first[1], second[1], third[1]);
   const feature3 = allDifferent(first[2], second[2], third[2]) || allSame(first[2], second[2], third[2]);
   const feature4 = allDifferent(first[3], second[3], third[3]) || allSame(first[3], second[3], third[3]);
-  console.log(feature1, feature2, feature3, feature4);
+  // console.log(feature1, feature2, feature3, feature4);
   return feature1 && feature2 && feature3 && feature4;
 }
+
+// given (12) cards, find the existing unique sets
+export function findSetsInCards(cards) {
+  const res = [];
+  for (let i = 0; i < cards.length; i++) {
+    for (let j = i; j < cards.length; j++) {
+      for (let k = j; k < cards.length; k++) {
+        if (i === j && j === k) continue;
+        const triple = [cards[i], cards[j], cards[k]]
+        if (checkIsSet(triple)) res.push(triple);
+      }
+    }
+  }
+  return res;
+}
+
 
 // a b and c are strings. Return true if they are all different
 function allDifferent(a, b, c) {

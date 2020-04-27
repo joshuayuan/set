@@ -1,6 +1,12 @@
 import React from 'react';
 import './App.css';
-import {generateCards, shuffleCards, drawNCardsFromDeck, checkIsSet} from './GameUtils.js';
+import {
+  generateCards,
+  shuffleCards,
+  drawNCardsFromDeck,
+  checkIsSet,
+  findSetsInCards
+} from './GameUtils.js';
 
 class Card extends React.Component {
   render() {
@@ -64,7 +70,11 @@ class App extends React.Component {
       }
       this.setState({cards: newCards, selected: Array(12).fill(false), deck: newDeck});
     }
+  }
 
+  onClickSolution() {
+    const sols = findSetsInCards(this.state.cards);
+    console.log(sols);
   }
 
   render() {
@@ -78,6 +88,7 @@ class App extends React.Component {
           />
         </div>
         <button className="Button" onClick={() => this.onClickEnter()}>Enter</button>
+        <button className="Button" onClick={() => this.onClickSolution()}>Solution</button>
       </div>
     );
   }
