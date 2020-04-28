@@ -76,10 +76,10 @@ class App extends React.Component {
 
   onClickSolution() {
     const sols = findSetsInCards(this.state.cards);
-    console.log(sols);
   }
 
   render() {
+    const svgDefs = <svg><defs><style>{".class{color: red}"}</style></defs></svg>; // TODO Add in later
     return (
       <div className="App">
         <div className="Board">
