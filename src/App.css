@@ -1,5 +1,5 @@
 .App {
-  background-color: #FFECC7;
+  background-color: #F1F2F6;
   height: 100vh;
   text-align: center;
 }
@@ -13,25 +13,38 @@
 }
 
 .Card {
-  border: 10px solid #FFECC7;
-  background-color: #85A392;
+  border-radius: 10px;
+  background-color: white;
   box-sizing: border-box;
-  flex-basis: 25%;
+  flex-basis: 23%;
+  margin: 1%;
+  padding: 10px;
   position: relative;
   width: 250px;
 }
 
 .Card.Selected {
-  border: 6px solid #FDD994;
+  background-color: #ddd;
 }
 
 .Card:hover {
-  border: 10px solid #FDD994;
+  background-color: #eee;
 }
 
 .Button {
-  background-color: #B590CA;
+  background-color: #bbb;
   border: none;
+  border-radius: 10px;
+  border-style: none;
   height: 50px;
   width: 100px;
+  margin: 1%;
+}
+
+.Button:active {
+  background-color: #aaa;
+}
+
+.Svg {
+  margin: 2%;
 }
