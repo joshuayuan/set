@@ -76,6 +76,7 @@ class App extends React.Component {
 
   onClickSolution() {
     const sols = findSetsInCards(this.state.cards);
+    sols.forEach((s) => console.log(s));
   }
 
   render() {
