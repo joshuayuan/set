@@ -1,6 +1,8 @@
-.App {
+Body {
   background-color: #F1F2F6;
-  height: 100vh;
+}
+
+.App {
   text-align: center;
 }
 
@@ -10,6 +12,12 @@
   display: flex;
   flex-flow: row wrap;
   justify-content: flex-start;
+}
+
+.Board .Title {
+  flex: 0 0 100%;
+  text-align: start;
+  margin: 1%;
 }
 
 .Card {
@@ -43,6 +51,9 @@
 
 .Button:active {
   background-color: #aaa;
+}
+
+.Header {
 }
 
 .Svg {

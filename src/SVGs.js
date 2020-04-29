@@ -44,10 +44,6 @@ class Shape extends React.Component {
 }
 
 class SVGs extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   getColorHex(colorInt) {
     switch(colorInt) {
       case 0: // red-ish
