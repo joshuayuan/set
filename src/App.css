@@ -14,11 +14,23 @@ Body {
   justify-content: flex-start;
 }
 
-.Board .Title {
-  flex: 0 0 100%;
+.Board .Info {
+  flex-basis: 100%;
   text-align: start;
-  margin: 1%;
+  padding: 1%;
+  display: flex;
 }
+
+.Board .Info .Title {
+  flex: 1 0;
+
+}
+
+.Board .Info .Score {
+  text-align: end;
+  flex: 1 0;
+}
+
 
 .Card {
   border-radius: 10px;
