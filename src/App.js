@@ -54,7 +54,7 @@ class App extends React.Component {
     };
 
     ReactGA.initialize('UA-164939986-1');
-    ReactGA.pageview("Set Main Page");
+    ReactGA.pageview(window.location.pathname + window.location.search);
   }
 
   onClickCard(position) {

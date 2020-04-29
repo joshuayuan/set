@@ -11,6 +11,7 @@
     "react-dom": "^16.13.1",
     "react-ga": "^2.7.0",
     "react-scripts": "3.4.1",
+    "serve": "^11.3.0",
     "svg-inline-react": "^3.2.0"
   },
   "scripts": {
