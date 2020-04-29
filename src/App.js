@@ -17,6 +17,7 @@ class Card extends React.Component {
     return (
       <div className={classes} onClick={this.props.clickHandler}>
         <SVGs value={this.props.value}/>
+        <p>{this.props.value}</p>
       </div>
     );
   }
@@ -62,20 +63,29 @@ class App extends React.Component {
   }
 
   onClickEnter() {
-    const newCards = this.state.cards.slice();
+    const currCards = this.state.cards.slice();
     const selectedIndexes = [];
     for (let i = 0; i < this.state.selected.length; i++) {
       if (this.state.selected[i]) selectedIndexes.push(i);
     }
     if (selectedIndexes.length !== 3) return;
 
-    const isSet = checkIsSet([newCards[selectedIndexes[0]], newCards[selectedIndexes[1]], newCards[selectedIndexes[2]]]);
-    if (isSet) {
+    const isSet = checkIsSet([currCards[selectedIndexes[0]], currCards[selectedIndexes[1]], currCards[selectedIndexes[2]]]);
+    if (!isSet) {
+      return;
+    }
+    if (currCards.length > 12) {
+      // Remove from currCards with reverse loop
+      for (let j = selectedIndexes.length - 1; j >= 0; j--) {
+        currCards.splice(selectedIndexes[j], 1);
+      }
+      this.setState({cards: currCards, selected: Array(currCards.length).fill(false)});
+    } else {
       const [drawnCards, newDeck] = drawNCardsFromDeck(selectedIndexes.length, this.state.deck);
       for (let j = 0; j < selectedIndexes.length; j++) {
-        newCards[selectedIndexes[j]] = drawnCards[j];
+        currCards[selectedIndexes[j]] = drawnCards[j];
       }
-      this.setState({cards: newCards, selected: Array(12).fill(false), deck: newDeck});
+      this.setState({cards: currCards, selected: Array(currCards.length).fill(false), deck: newDeck});
     }
   }
 
@@ -86,10 +96,24 @@ class App extends React.Component {
 
   onClickToggleGameMode() {
     const gameMode = this.state.gameMode;
-
-
     const newGameMode = gameMode === 1 ? 0 : 1;
     this.setState({gameMode: newGameMode});
+  }
+
+  onClickNoSet() {
+    const currCards = this.state.cards.slice();
+    const sols = findSetsInCards(currCards);
+
+    if (sols.length === 0) {
+      const [additionalCards, newDeck] = drawNCardsFromDeck(3, this.state.deck);
+      const newCards = currCards.concat(additionalCards);
+      console.log(newCards);
+      this.setState({
+        deck: newDeck,
+        selected: Array(newCards.length).fill(false),
+        cards: newCards,
+      });
+    }
   }
 
   render() {
@@ -106,6 +130,7 @@ class App extends React.Component {
             selected={this.state.selected}
           />
         </div>
+        <button className="Button" onClick={() => this.onClickNoSet()}>No Set?</button>
         <button className="Button" onClick={() => this.onClickEnter()}>Enter</button>
         <button className="Button" onClick={() => this.onClickSolution()}>Solution</button>
       </div>
