@@ -10,7 +10,7 @@ export default class Header extends React.Component {
     <div className="Header">
       <h1>SET</h1>
       <button className="Button" onClick={this.props.onClick}>{gameModeText}</button>
-      <a href="https://github.com/joshuayuan/set/blob/master/README.md">Help me</a>
+      <a href="https://github.com/joshuayuan/set/blob/master/README.md">(WORK IN PROGRESS)</a>
     </div>);
   }
 }

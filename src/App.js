@@ -32,7 +32,7 @@ class Board extends React.Component {
           key={i}
           value={this.props.cards[i]}
           clickHandler={() => this.props.onClickCard(i)}
-          isSelected={this.props.selected[i]}
+          isSelected={this.props.selected.has(i)}
         />
       );
     }
@@ -47,7 +47,7 @@ class App extends React.Component {
     const [initialCards, deck] = drawNCardsFromDeck(12, shuffleCards(generateCards()));
     this.state = {
       cards: initialCards,
-      selected: Array(12).fill(false),
+      selected: new Set(), // Empty set to hold index of selected cards
       deck: deck,
       gameMode: 0, // 0: free play, 1: timed
       score: 0,
@@ -58,45 +58,30 @@ class App extends React.Component {
   }
 
   onClickCard(position) {
-    const selected = this.state.selected.slice();
-    selected[position] = !selected[position];
+    const selected = new Set(this.state.selected); // Indices
+    if (selected.has(position)) { // Deselect
+      selected.delete(position);
+    } else { // Select?
+      if (selected.size >= 3) return; // Don't select more than 3.
+      selected.add(position);
+
+      const potentialSet = [] ;
+      selected.forEach((i) => potentialSet.push(this.state.cards[i]));
+
+      if (checkIsSet(potentialSet)) {
+        const currCards = this.state.cards.slice();
+        const [drawnCards, newDeck] = drawNCardsFromDeck(selected.size, this.state.deck);
+        const selectedList = Array.from(selected);
+        for (let i = 0; i < selectedList.length; i++) { // should always be length 3 though.
+          currCards[selectedList[i]] = drawnCards[i];
+        }
+
+        this.setState({cards: currCards, deck: newDeck});
+        selected.clear();
+      }
+    }
+
     this.setState({selected: selected});
-  }
-
-  onClickEnter() {
-    const currCards = this.state.cards.slice();
-    const selectedIndexes = [];
-    for (let i = 0; i < this.state.selected.length; i++) {
-      if (this.state.selected[i]) selectedIndexes.push(i);
-    }
-    if (selectedIndexes.length !== 3) return;
-
-    const isSet = checkIsSet([currCards[selectedIndexes[0]], currCards[selectedIndexes[1]], currCards[selectedIndexes[2]]]);
-
-    // Fail early if not a set.
-    if (!isSet) {
-      return;
-    }
-
-    if (currCards.length > 12) {
-      // Remove from currCards with reverse loop
-      for (let j = selectedIndexes.length - 1; j >= 0; j--) {
-        currCards.splice(selectedIndexes[j], 1);
-      }
-    } else {
-      const [drawnCards, newDeck] = drawNCardsFromDeck(selectedIndexes.length, this.state.deck);
-      for (let j = 0; j < selectedIndexes.length; j++) {
-        currCards[selectedIndexes[j]] = drawnCards[j];
-      }
-      // Update the deck because we drew new cards from the deck.
-      this.setState({deck: newDeck});
-    }
-    // Always re-update the current cards, and reset selected states
-    this.setState({cards: currCards, selected: Array(currCards.length).fill(false)});
-
-    // Update score if needed
-    const currScore = this.state.score;
-    if (this.state.gameMode === 1) this.setState({score: currScore + 1});
   }
 
   onClickSolution() {
@@ -163,7 +148,6 @@ class App extends React.Component {
           />
         </div>
         <button className="Button" onClick={() => this.onClickNoSet()}>No Set?</button>
-        <button className="Button" onClick={() => this.onClickEnter()}>Enter</button>
         <button className="Button" onClick={() => this.onClickSolution()}>Solution</button>
       </div>
     );
