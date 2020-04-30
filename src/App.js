@@ -64,21 +64,29 @@ class App extends React.Component {
     } else { // Select?
       if (selected.size >= 3) return; // Don't select more than 3.
       selected.add(position);
+    }
 
-      const potentialSet = [] ;
-      selected.forEach((i) => potentialSet.push(this.state.cards[i]));
+    const potentialSet = [] ;
+    selected.forEach((i) => potentialSet.push(this.state.cards[i]));
 
-      if (checkIsSet(potentialSet)) {
-        const currCards = this.state.cards.slice();
+    if (checkIsSet(potentialSet)) {
+      const currCards = this.state.cards.slice();
+      const selectedList = Array.from(selected);
+      if (currCards.length > 12) {
+        // Remove cards from the back of the list
+        for (let j = selectedList.length - 1; j >= 0; j--) {
+          currCards.splice(selectedList[j], 1);
+        }
+        this.setState({cards: currCards});
+      } else {
         const [drawnCards, newDeck] = drawNCardsFromDeck(selected.size, this.state.deck);
-        const selectedList = Array.from(selected);
         for (let i = 0; i < selectedList.length; i++) { // should always be length 3 though.
           currCards[selectedList[i]] = drawnCards[i];
         }
-
         this.setState({cards: currCards, deck: newDeck});
-        selected.clear();
       }
+
+      selected.clear();
     }
 
     this.setState({selected: selected});
@@ -97,18 +105,14 @@ class App extends React.Component {
 
   onClickNoSet() {
     const currCards = this.state.cards.slice();
-    const sols = findSetsInCards(currCards);
-
-    if (sols.length === 0) {
-      const [additionalCards, newDeck] = drawNCardsFromDeck(3, this.state.deck);
-      const newCards = currCards.concat(additionalCards);
-      console.log(newCards);
-      this.setState({
-        deck: newDeck,
-        selected: Array(newCards.length).fill(false),
-        cards: newCards,
-      });
-    }
+    const [additionalCards, newDeck] = drawNCardsFromDeck(3, this.state.deck);
+    const newCards = currCards.concat(additionalCards);
+    console.log(newCards);
+    this.setState({
+      deck: newDeck,
+      selected: new Set(),
+      cards: newCards,
+    });
   }
 
   buildTimer() {
