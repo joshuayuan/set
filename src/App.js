@@ -120,7 +120,17 @@ class App extends React.Component {
   onClickToggleGameMode() {
     const gameMode = this.state.gameMode;
     const newGameMode = gameMode === 1 ? 0 : 1;
-    this.setState({gameMode: newGameMode});
+
+    // Restart game.
+    // TODO modularize the game restart.
+    const [newCards, newDeck] = drawNCardsFromDeck(12, shuffleCards(generateCards()));
+    const newSols = findSetsInCards(newCards);
+    this.setState({
+      gameMode: newGameMode,
+      cards: newCards,
+      deck: newDeck,
+      solutions: newSols,
+      solutionIndex: -1});
   }
 
   onClickNoSet() {
@@ -155,7 +165,7 @@ class App extends React.Component {
 
     const timedDetails = this.state.gameMode === 0
       ? <span />
-      : (<span className="Score">Score:  {this.state.score} || {this.buildTimer()} </span>);
+      : (<p className="Score">Score:  {this.state.score} || {this.buildTimer()} </p>);
 
     return (
       <div className="App">
@@ -177,8 +187,10 @@ class App extends React.Component {
           />
         </div>
         <button className="Button" onClick={() => this.onClickNoSet()}>No Set?</button>
-        <button className="Button" onClick={() => this.onClickSolution()}>Solution</button>
-      </div>
+        {this.state.gameMode === 0
+          ? <button className="Button" onClick={() => this.onClickSolution()}>Solution</button>
+          : null}
+        </div>
     );
   }
 }

@@ -2,7 +2,7 @@
  * This class contains utility functions for the game.
  */
 
-// This function should only be called once at the start of each game.
+// This function should only be called at the start of each game.
 export function generateCards() {
   const cards = [];
   for (let i = 0; i < 3; i++) {
