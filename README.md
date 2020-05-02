@@ -1,6 +1,6 @@
 # Set Online
 
-*readme last edited: 4/29/2020*
+*readme last edited: 5/02/2020*
 
 **This is a work in progress. Feel free to submit a PR ;)**
 
@@ -15,12 +15,15 @@
 
 This is currently just a basic implementation of the game Set. You should look up instructions on what a "set" is / how to play.
 
-![screenshot](./public/screenshot4.png)
+![screenshot](./public/screenshot5.png)
 
-There are two modes: free play and timed. In free play, select 3 cards and click enter. If it is a set, those 3 cards will be replaced. Pressing solution will print out the solution in the dev inspect console. If you press the no set button when there is no set, then 3 more cards will be shown. Timed is the same as free play, except I added a timer and score tracker.
+To play, select 3 cards, and if they make up a set then they will disappear and be replaced by 3 more cards from the deck. Pressing "Solution" will rotate you through the solutions if they exist. Pressing "No set" will add 3 more cards to your deck.
+
+There are two modes: free play and timed.
+The differences are that in timed, we keep track of your score and there's a 3 minute timer to get as high a score as possible. No checking for the solutions in this mode!
 
 ## Acknowledgements
 
-Thanks to Brent for helping me a lot, Cherry for helping me fix the UI (see screenshots 2 and 3 in the assets folder for what it used to look like), and Steven for the inspiration and motivation to create this game!
+Thanks to Brent for helping me a lot, Cherry for helping me fix the UI (see screenshots 2 and 3 in the assets folder for what it used to look like), Myron for some advice, and Steven for the inspiration and motivation to create this game!
 
 
