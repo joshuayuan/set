@@ -83,7 +83,7 @@ class App extends React.Component {
     if (checkIsSet(potentialSet)) {
       // Will be generating new cards here, so should also find the new solutions
       const currCards = this.state.cards.slice();
-      const selectedList = Array.from(selected);
+      const selectedList = Array.from(selected).sort((a, b) => a - b); // Sort numerically
       if (currCards.length > 12) {
         // Remove cards from the back of the list
         for (let j = selectedList.length - 1; j >= 0; j--) {
@@ -127,9 +127,11 @@ class App extends React.Component {
     const currCards = this.state.cards.slice();
     const [additionalCards, newDeck] = drawNCardsFromDeck(3, this.state.deck);
     const newCards = currCards.concat(additionalCards);
+    const newSolutions = findSetsInCards(newCards);
     this.setState({
       deck: newDeck,
       cards: newCards,
+      solutions: newSolutions,
       solutionIndex: -1,
     });
   }
