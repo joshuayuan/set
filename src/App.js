@@ -129,6 +129,7 @@ class App extends React.Component {
       gameMode: newGameMode,
       cards: newCards,
       deck: newDeck,
+      selected: new Set(),
       solutions: newSols,
       solutionIndex: -1});
   }
@@ -176,7 +177,7 @@ class App extends React.Component {
 
     const timedDetails = this.state.gameMode === 0
       ? <span className="Score"/>
-      : (<p className="Score">Score:  {this.state.score} || {this.buildTimer()} </p>);
+      : (<p className="Score">score: {this.state.score} || {this.buildTimer()} </p>);
 
     return (
       <div className="App">

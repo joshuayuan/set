@@ -79,11 +79,11 @@ Body {
 }
 
 .Card.Selected {
-  background-color: #ddd;
+  background-color: #bbb;
 }
 
 .Card:hover {
-  background-color: #eee;
+  background-color: #ddd;
 }
 
 .Card .Dot {
