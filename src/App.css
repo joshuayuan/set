@@ -51,6 +51,16 @@ Body {
   background-color: #eee;
 }
 
+.Card .Dot {
+  background-color: purple;
+  bottom: 15px;
+  border-radius: 50%;
+  height: 15px;
+  position: absolute;
+  right: 15px;
+  width: 15px;
+}
+
 .Button {
   background-color: #bbb;
   border: none;

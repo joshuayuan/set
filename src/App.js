@@ -18,6 +18,9 @@ class Card extends React.Component {
     return (
       <div className={classes} onClick={this.props.clickHandler}>
         <SVGs value={this.props.value}/>
+        {this.props.inSolution
+          ? <span className="Dot" />
+          : null}
       </div>
     );
   }
@@ -27,8 +30,13 @@ class Board extends React.Component {
   render() {
     const res = [];
     for (let i = 0; i < this.props.cards.length; i++) {
+      const inSolution = this.props.solution != null
+        ? this.props.solution.includes(this.props.cards[i])
+        : false;
+
       res.push(
         <Card
+          inSolution={inSolution}
           key={i}
           value={this.props.cards[i]}
           clickHandler={() => this.props.onClickCard(i)}
@@ -45,8 +53,11 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     const [initialCards, deck] = drawNCardsFromDeck(12, shuffleCards(generateCards()));
+    const solutions = findSetsInCards(initialCards);
     this.state = {
       cards: initialCards,
+      solutions: solutions, // List of the solutions -- [[s1, s2, s3], [s1, s2, s3], ...]
+      solutionIndex: -1, // Index to track which solution we are displaying. Init at -1.
       selected: new Set(), // Empty set to hold index of selected cards
       deck: deck,
       gameMode: 0, // 0: free play, 1: timed
@@ -70,6 +81,7 @@ class App extends React.Component {
     selected.forEach((i) => potentialSet.push(this.state.cards[i]));
 
     if (checkIsSet(potentialSet)) {
+      // Will be generating new cards here, so should also find the new solutions
       const currCards = this.state.cards.slice();
       const selectedList = Array.from(selected);
       if (currCards.length > 12) {
@@ -77,24 +89,32 @@ class App extends React.Component {
         for (let j = selectedList.length - 1; j >= 0; j--) {
           currCards.splice(selectedList[j], 1);
         }
-        this.setState({cards: currCards});
       } else {
+        // Add 3 from deck.
         const [drawnCards, newDeck] = drawNCardsFromDeck(selected.size, this.state.deck);
         for (let i = 0; i < selectedList.length; i++) { // should always be length 3 though.
           currCards[selectedList[i]] = drawnCards[i];
         }
-        this.setState({cards: currCards, deck: newDeck});
+        this.setState({deck: newDeck});
       }
 
       selected.clear();
+      const newSols = findSetsInCards(currCards);
+      this.setState({cards: currCards, solutions: newSols, solutionIndex: -1});
     }
 
     this.setState({selected: selected});
   }
 
   onClickSolution() {
-    const sols = findSetsInCards(this.state.cards);
-    sols.forEach((s) => console.log(s));
+    const sols = this.state.solutions.slice();
+    if (!sols.length) {
+      // No solution
+      // Maybe change button to say "no solution" in the future.
+      return;
+    }
+    const solutionIndex = this.state.solutionIndex;
+    this.setState({solutionIndex: (solutionIndex + 1) % sols.length});
   }
 
   onClickToggleGameMode() {
@@ -107,11 +127,10 @@ class App extends React.Component {
     const currCards = this.state.cards.slice();
     const [additionalCards, newDeck] = drawNCardsFromDeck(3, this.state.deck);
     const newCards = currCards.concat(additionalCards);
-    console.log(newCards);
     this.setState({
       deck: newDeck,
-      selected: new Set(),
       cards: newCards,
+      solutionIndex: -1,
     });
   }
 
@@ -146,6 +165,10 @@ class App extends React.Component {
             {timedDetails}
           </div>
           <Board
+            solution={
+              this.state.solutionIndex === -1
+                ? null
+                : this.state.solutions[this.state.solutionIndex]}
             cards={this.state.cards}
             onClickCard={(i) => this.onClickCard(i)}
             selected={this.state.selected}
