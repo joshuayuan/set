@@ -146,6 +146,17 @@ class App extends React.Component {
     });
   }
 
+  onClickShuffle() {
+    const currCards = this.state.cards.slice();
+    const shuffledCards = shuffleCards(currCards);
+    const selectedIndices = Array.from(this.state.selected);
+    const newIndices = [];
+    for (let i = 0; i < selectedIndices.length; i++) {
+      newIndices.push(shuffledCards.indexOf(currCards[selectedIndices[i]]));
+    }
+    this.setState({cards: shuffledCards, selected: new Set(newIndices)});
+  }
+
   buildTimer() {
     return (
           <Timer initialTime={180000} direction="backward" startImmediately={true}>
@@ -187,6 +198,7 @@ class App extends React.Component {
           />
         </div>
         <button className="Button" onClick={() => this.onClickNoSet()}>No Set?</button>
+        <button className="Button" onClick={() => this.onClickShuffle()}>Shuffle</button>
         {this.state.gameMode === 0
           ? <button className="Button" onClick={() => this.onClickSolution()}>Solution</button>
           : null}
