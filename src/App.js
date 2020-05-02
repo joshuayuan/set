@@ -175,16 +175,25 @@ class App extends React.Component {
     // const svgDefs = <svg><defs><style>{".class{color: red}"}</style></defs></svg>; 
 
     const timedDetails = this.state.gameMode === 0
-      ? <span />
+      ? <span className="Score"/>
       : (<p className="Score">Score:  {this.state.score} || {this.buildTimer()} </p>);
 
     return (
       <div className="App">
         <Header gameMode={this.state.gameMode} onClick={() => this.onClickToggleGameMode()} />
         <hr/>
+        <hr/>
         <div className="Board">
           <div className="Info">
-            <p className="Title">game mode: {this.state.gameMode === 0 ? "free play" : "timed"}</p>
+            <p className="Mode">game mode: {this.state.gameMode === 0 ? "free play" : "timed"}</p>
+
+            <div className="Buttons">
+              <button className="Button" onClick={() => this.onClickNoSet()}>No Set?</button>
+              <button className="Button" onClick={() => this.onClickShuffle()}>Shuffle</button>
+              {this.state.gameMode === 0
+                ? <button className="Button" onClick={() => this.onClickSolution()}>Solution</button>
+                : null}
+            </div>
             {timedDetails}
           </div>
           <Board
@@ -197,11 +206,6 @@ class App extends React.Component {
             selected={this.state.selected}
           />
         </div>
-        <button className="Button" onClick={() => this.onClickNoSet()}>No Set?</button>
-        <button className="Button" onClick={() => this.onClickShuffle()}>Shuffle</button>
-        {this.state.gameMode === 0
-          ? <button className="Button" onClick={() => this.onClickSolution()}>Solution</button>
-          : null}
         </div>
     );
   }

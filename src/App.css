@@ -19,11 +19,11 @@ Body {
   text-align: start;
   padding: 1%;
   display: flex;
+  flex-flow: row wrap;
 }
 
-.Board .Info .Title {
+.Board .Info .Mode {
   flex: 1 0;
-
 }
 
 .Board .Info .Score {
@@ -31,6 +31,23 @@ Body {
   flex: 1 0;
 }
 
+.Board .Info .Buttons {
+  flex-grow: 1;
+  text-align: center;
+}
+
+@media(max-width: 700px) {
+  .Board .Info .Mode {
+    order: 1;
+  }
+  .Board .Info .Score{
+    order: 2;
+  }
+  .Board .Info .Buttons {
+    flex-basis: 100%;
+    order: 3;
+  }
+}
 
 .Card {
   border-radius: 10px;
@@ -41,6 +58,24 @@ Body {
   padding: 10px;
   position: relative;
   width: 250px;
+}
+
+@media(max-width: 1333px) {
+  .Card {
+    flex-basis: 23%;
+  }
+}
+
+@media(max-width: 1073px) {
+  .Card {
+    flex-basis: 31%;
+  }
+}
+
+@media (max-width: 700px) {
+  .Card {
+    flex-basis: 48%;
+  }
 }
 
 .Card.Selected {
