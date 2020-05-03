@@ -34,6 +34,10 @@ export function shuffleCards(cards) {
 export function drawNCardsFromDeck(n, deck)  {
   const newDeck = deck.slice();
   const drawnCards = [];
+  if (n > deck.length) { // If there are not enough cards
+    return [newDeck, []];
+  }
+
   for (let i = 0; i < n; i++) {
     drawnCards.push(newDeck.pop());
   }

@@ -62,6 +62,7 @@ class App extends React.Component {
       deck: deck,
       gameMode: 0, // 0: free play, 1: timed
       score: 0,
+      hasWon: false,
     };
 
     ReactGA.initialize('UA-164939986-1');
@@ -92,15 +93,32 @@ class App extends React.Component {
       } else {
         // Add 3 from deck.
         const [drawnCards, newDeck] = drawNCardsFromDeck(selected.size, this.state.deck);
-        for (let i = 0; i < selectedList.length; i++) { // should always be length 3 though.
-          currCards[selectedList[i]] = drawnCards[i];
+        if (drawnCards.length === 0) {
+          // No more cards.
+          // Remove cards from the back of the list (Same as above^)
+          for (let k = selectedList.length - 1; k >= 0; k--) {
+            currCards.splice(selectedList[k], 1);
+          }
+        } else {
+          for (let i = 0; i < selectedList.length; i++) { // should always be length 3 though.
+            currCards[selectedList[i]] = drawnCards[i];
+          }
         }
         this.setState({deck: newDeck});
       }
+      const filteredCards = currCards.filter(x => !!x); // This is a gamechanger lne of code.
 
       selected.clear();
-      const newSols = findSetsInCards(currCards);
-      this.setState({cards: currCards, solutions: newSols, solutionIndex: -1});
+      const newSols = findSetsInCards(filteredCards);
+      // Not sure if it's safe to read deck state right after it's been set^
+      if (newSols.length === 0 && (this.state.deck.length === 0))
+        this.setState({hasWon: true});
+      this.setState({
+        score: this.state.score + 1,
+        cards: filteredCards,
+        solutions: newSols,
+        solutionIndex: -1,
+      });
     }
 
     this.setState({selected: selected});
@@ -131,7 +149,10 @@ class App extends React.Component {
       deck: newDeck,
       selected: new Set(),
       solutions: newSols,
-      solutionIndex: -1});
+      solutionIndex: -1,
+      score: 0,
+      hasWon: false,
+    });
   }
 
   onClickNoSet() {
@@ -175,9 +196,11 @@ class App extends React.Component {
     // TODO Add in later
     // const svgDefs = <svg><defs><style>{".class{color: red}"}</style></defs></svg>; 
 
+    const hasWonElement = this.state.hasWon ? <span><b>Congrats! You have won!</b></span> : null;
+
     const timedDetails = this.state.gameMode === 0
-      ? <span className="Score"/>
-      : (<p className="Score">score: {this.state.score} || {this.buildTimer()} </p>);
+      ? <p className="Score">{hasWonElement}</p>
+      : (<p className="Score">{hasWonElement} score: {this.state.score} || {this.buildTimer()} </p>);
 
     return (
       <div className="App">
@@ -187,7 +210,6 @@ class App extends React.Component {
         <div className="Board">
           <div className="Info">
             <p className="Mode">game mode: {this.state.gameMode === 0 ? "free play" : "timed"}</p>
-
             <div className="Buttons">
               <button className="Button" onClick={() => this.onClickNoSet()}>No Set?</button>
               <button className="Button" onClick={() => this.onClickShuffle()}>Shuffle</button>
