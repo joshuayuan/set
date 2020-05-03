@@ -27,7 +27,22 @@ class Card extends React.Component {
 }
 
 class Board extends React.Component {
+
+  renderGameOver() {
+    return (
+      <div className="Endgame">
+        <h1>Game is over!</h1>
+        <p>Your score was {this.props.score}.</p>
+      </div>
+    );
+  }
+
+
   render() {
+    // If game is over:
+    if (this.props.gameStatus === 1) return this.renderGameOver();
+
+    // Rendering playing cards:
     const res = [];
     for (let i = 0; i < this.props.cards.length; i++) {
       const inSolution = this.props.solution != null
@@ -62,7 +77,8 @@ class App extends React.Component {
       deck: deck,
       gameMode: 0, // 0: free play, 1: timed
       score: 0,
-      hasWon: false,
+      hasWon: false, // Only indicates if you have gone through the whole deck.
+      gameStatus: 1, // 0: playing 1: over
     };
 
     ReactGA.initialize('UA-164939986-1');
@@ -151,6 +167,7 @@ class App extends React.Component {
       solutions: newSols,
       solutionIndex: -1,
       score: 0,
+      gameStatus: 0,
       hasWon: false,
     });
   }
@@ -181,7 +198,14 @@ class App extends React.Component {
 
   buildTimer() {
     return (
-          <Timer initialTime={180000} direction="backward" startImmediately={true}>
+          <Timer
+            initialTime={180000}
+            direction="backward"
+            checkpoints={[{
+              time: 0,
+              callback: () => this.setState({gameStatus: 1}),
+            }]}
+          >
             {() => (
               <React.Fragment>
                 <span>
@@ -190,6 +214,29 @@ class App extends React.Component {
               </React.Fragment>
             )}
           </Timer>);
+  }
+
+  setUpFirebase() {
+    const script1 = <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-app.js"></script>;
+
+    const script2 = <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-analytics.js"></script>;
+
+    const script3 = (<script>
+        // Your web app's Firebase configuration
+      var firebaseConfig = {
+        apiKey: "AIzaSyDRnyzMc_vvktILHbiSW0C5T0YBOcxk4oE",
+        authDomain: "joshy-set-online.firebaseapp.com",
+        databaseURL: "https://joshy-set-online.firebaseio.com",
+        projectId: "joshy-set-online",
+        storageBucket: "joshy-set-online.appspot.com",
+        messagingSenderId: "1058452292083",
+        appId: "1:1058452292083:web:3f2198f86e1de3a5a7d286",
+        measurementId: "G-R69QQKTEN5"
+      };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+    </script>);
   }
 
   render() {
@@ -220,6 +267,9 @@ class App extends React.Component {
             {timedDetails}
           </div>
           <Board
+            gameStatus={this.state.gameStatus}
+            score={this.state.score}
+            hasWon={this.state.hasWon}
             solution={
               this.state.solutionIndex === -1
                 ? null
