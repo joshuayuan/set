@@ -12,6 +12,8 @@ import Header from './OtherComponents.js';
 import ReactGA from 'react-ga';
 import Timer from 'react-compound-timer';
 
+import firebase from './firebase.js';
+
 class Card extends React.Component {
   render() {
     const classes = "Card" + (this.props.isSelected ? " Selected" : "");
@@ -27,12 +29,34 @@ class Card extends React.Component {
 }
 
 class Board extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    const data = new FormData(event.target);
+
+    const name = data.get('name');
+    firebase.database().ref("/scores").push({
+      username: name,
+      score: this.props.score,
+    });
+  }
 
   renderGameOver() {
     return (
       <div className="Endgame">
         <h1>Game is over!</h1>
         <p>Your score was {this.props.score}.</p>
+        <form onSubmit={this.handleSubmit}>
+          <label>
+            Save your score with a name:
+            <input type="text" name="name" />
+          </label>
+          <input type="submit" value="save" />
+        </form>
       </div>
     );
   }
@@ -80,6 +104,8 @@ class App extends React.Component {
       hasWon: false, // Only indicates if you have gone through the whole deck.
       gameStatus: 0, // 0: playing 1: over
     };
+
+
 
     ReactGA.initialize('UA-164939986-1');
     ReactGA.pageview(window.location.pathname + window.location.search);
@@ -219,6 +245,7 @@ class App extends React.Component {
             )}
           </Timer>);
   }
+
 
   render() {
     // TODO Add in later
