@@ -243,7 +243,7 @@ class App extends React.Component {
     return (
           <Timer
             ref={this.timer}
-            initialTime={108000}
+            initialTime={180001} // Have to add the one, or else the timer skip sthe first second
             direction="backward"
             checkpoints={[{
               time: 0,
