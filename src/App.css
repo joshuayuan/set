@@ -120,5 +120,18 @@ Body {
 .Endgame {
   width: 100%;
   text-align: center;
+}
 
+.Endgame input {
+  margin: 10px;
+}
+
+.Endgame input[type=submit] {
+  background-color: #bbb;
+  border: none;
+  border-radius: 10px;
+  border-style: none;
+  height: 25px;
+  margin: 0px;
+  width: 75px;
 }

@@ -49,13 +49,19 @@ class Board extends React.Component {
     return (
       <div className="Endgame">
         <h1>Game is over!</h1>
-        <p>Your score was {this.props.score}.</p>
+        <p>Your score was <b>{this.props.score}</b>.</p>
         <form onSubmit={this.handleSubmit}>
-          <label>
-            Save your score with a name:
+          <div>
+            <label>
+              Save your score with a name:
+            </label>
+          </div>
+          <div className="Input">
             <input type="text" name="name" />
-          </label>
-          <input type="submit" value="save" />
+          </div>
+          <div>
+            <input type="submit" value="save" />
+          </div>
         </form>
       </div>
     );
@@ -102,7 +108,7 @@ class App extends React.Component {
       gameMode: 0, // 0: free play, 1: timed
       score: 0,
       hasWon: false, // Only indicates if you have gone through the whole deck.
-      gameStatus: 0, // 0: playing 1: over
+      gameStatus: 1, // 0: playing 1: over
     };
 
 
