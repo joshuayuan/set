@@ -42,7 +42,10 @@ class Board extends React.Component {
     firebase.database().ref("/scores").push({
       username: name,
       score: this.props.score,
+      timeStamp: firebase.database.ServerValue.TIMESTAMP,
     });
+
+    this.props.resetGame(this.props.gameMode);
   }
 
   renderGameOver() {
@@ -108,17 +111,36 @@ class App extends React.Component {
       gameMode: 0, // 0: free play, 1: timed
       score: 0,
       hasWon: false, // Only indicates if you have gone through the whole deck.
-      gameStatus: 1, // 0: playing 1: over
+      gameStatus: 0, // 0: playing 1: over
     };
 
-
+    this.resetGame = this.resetGame.bind(this);
+    this.timer = React.createRef();
 
     ReactGA.initialize('UA-164939986-1');
     ReactGA.pageview(window.location.pathname + window.location.search);
   }
 
-  componentDidMount() {
-
+  resetGame(newGameMode) {
+    if (newGameMode === 1 && this.timer.current != null) {
+      // TODO Add count down later
+      this.timer.current.reset();
+      this.timer.current.start();
+    }
+    // Restart game.
+    const [newCards, newDeck] = drawNCardsFromDeck(12, shuffleCards(generateCards()));
+    const newSols = findSetsInCards(newCards);
+    this.setState({
+      gameMode: newGameMode,
+      cards: newCards,
+      deck: newDeck,
+      selected: new Set(),
+      solutions: newSols,
+      solutionIndex: -1,
+      score: 0,
+      gameStatus: 0,
+      hasWon: false,
+    });
   }
 
   onClickCard(position) {
@@ -190,22 +212,7 @@ class App extends React.Component {
   onClickToggleGameMode() {
     const gameMode = this.state.gameMode;
     const newGameMode = gameMode === 1 ? 0 : 1;
-
-    // Restart game.
-    // TODO modularize the game restart.
-    const [newCards, newDeck] = drawNCardsFromDeck(12, shuffleCards(generateCards()));
-    const newSols = findSetsInCards(newCards);
-    this.setState({
-      gameMode: newGameMode,
-      cards: newCards,
-      deck: newDeck,
-      selected: new Set(),
-      solutions: newSols,
-      solutionIndex: -1,
-      score: 0,
-      gameStatus: 0,
-      hasWon: false,
-    });
+    this.resetGame(newGameMode);
   }
 
   onClickNoSet() {
@@ -235,7 +242,8 @@ class App extends React.Component {
   buildTimer() {
     return (
           <Timer
-            initialTime={180000}
+            ref={this.timer}
+            initialTime={108000}
             direction="backward"
             checkpoints={[{
               time: 0,
@@ -281,9 +289,10 @@ class App extends React.Component {
             {timedDetails}
           </div>
           <Board
+            resetGame={this.resetGame}
             gameStatus={this.state.gameStatus}
             score={this.state.score}
-            hasWon={this.state.hasWon}
+            gameMode={this.state.gameMode}
             solution={
               this.state.solutionIndex === -1
                 ? null
