@@ -34,6 +34,7 @@ The differences are that in timed, we keep track of your score and there's a 3 m
 - how-to-play page/modal
 - database security!
 - domain
+
 For multiplayer support:
 - landing page (to choose to create custom multiplayer room, or to play single player)
 - ranking for multiplayer
